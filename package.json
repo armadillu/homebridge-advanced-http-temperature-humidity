@@ -29,20 +29,16 @@
     "homebridge": ">=1.0.0"
   },
   "dependencies": {
-    "axios": "^0.21.1"
+    "node-fetch": "2.6.1"
   },
   "devDependencies": {
-    "@types/jest": "^26.0.19",
     "@types/node": "14.14.31",
     "@typescript-eslint/eslint-plugin": "^4.12.0",
     "@typescript-eslint/parser": "^4.12.0",
     "eslint": "^7.17.0",
-    "eslint-plugin-jest": "^24.1.3",
     "homebridge": "^1.0.4",
-    "jest": "^26.6.3",
     "rimraf": "^3.0.2",
-    "ts-jest": "^26.4.4",
     "ts-node": "^9.1.1",
-    "typescript": "^4.2.2"
+    "typescript": "^4.4.2"
   }
 }

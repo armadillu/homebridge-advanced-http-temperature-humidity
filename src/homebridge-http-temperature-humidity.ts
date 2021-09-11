@@ -1,4 +1,3 @@
-import axios, { AxiosResponse } from 'axios';
 import {
   AccessoryConfig,
   AccessoryPlugin,
@@ -7,6 +6,7 @@ import {
   Logging,
   Service,
 } from 'homebridge';
+import fetch from 'node-fetch';
 
 let hap: HAP;
 
@@ -16,7 +16,7 @@ let hap: HAP;
 export = (api: API) => {
   hap = api.hap;
   api.registerAccessory(
-    'homebridge-http-temperature-humidity',
+    'homebridge-http-temperature-humidity-sensor',
     'HttpTemperatureHumiditySensor',
     HttpTemperatureHumidityAccessory,
   );
@@ -38,6 +38,7 @@ class HttpTemperatureHumidityAccessory implements AccessoryPlugin {
   private accessoryState = {
     temperature: 0,
     humidity: 0,
+    statusActive: false,
   };
 
   private readonly temperatureService: Service;
@@ -62,6 +63,9 @@ class HttpTemperatureHumidityAccessory implements AccessoryPlugin {
     this.temperatureService
       .getCharacteristic(hap.Characteristic.CurrentTemperature)
       .onGet(this.getCurrentTemperature.bind(this));
+    this.temperatureService
+      .getCharacteristic(hap.Characteristic.StatusActive)
+      .onGet(this.getStatusActive.bind(this));
 
     // Define HumidityService
     this.humidityService = new hap.Service.HumiditySensor('Humidity');
@@ -69,6 +73,9 @@ class HttpTemperatureHumidityAccessory implements AccessoryPlugin {
       this.humidityService
         .getCharacteristic(hap.Characteristic.CurrentRelativeHumidity)
         .onGet(this.getCurrentRelativeHumidity.bind(this));
+      this.humidityService
+        .getCharacteristic(hap.Characteristic.StatusActive)
+        .onGet(this.getStatusActive.bind(this));
     }
 
     // Define InformationService
@@ -78,15 +85,16 @@ class HttpTemperatureHumidityAccessory implements AccessoryPlugin {
       .setCharacteristic(hap.Characteristic.SerialNumber, this.serial);
 
     setInterval(() => {
+      this.log.debug('Triggering updateAccessoryState');
       this.updateAllStates()
         .then(() => {
           // push the new value to HomeKit
           this.temperatureService.updateCharacteristic(hap.Characteristic.CurrentTemperature, this.accessoryState.temperature);
+          this.temperatureService.updateCharacteristic(hap.Characteristic.StatusActive, this.accessoryState.statusActive);
           if(this.disableHumidity !== true) {
             this.humidityService.updateCharacteristic(hap.Characteristic.CurrentRelativeHumidity, this.accessoryState.humidity);
+            this.humidityService.updateCharacteristic(hap.Characteristic.StatusActive, this.accessoryState.statusActive);
           }
-
-          this.log.debug('Triggering updateAccessoryState');
         });
     }, this.getRefreshIntervalInMillis());
 
@@ -120,7 +128,7 @@ class HttpTemperatureHumidityAccessory implements AccessoryPlugin {
     return services;
   }
 
-  getCurrentTemperature() {
+  getCurrentTemperature(): number {
     const currentTemperature = this.accessoryState.temperature;
     this.log('getCurrentTemperature: ' + currentTemperature);
     return currentTemperature;
@@ -130,6 +138,11 @@ class HttpTemperatureHumidityAccessory implements AccessoryPlugin {
     const currentRelativeHumidity = this.accessoryState.humidity;
     this.log('getCurrentRelativeHumidity: ' + currentRelativeHumidity);
     return currentRelativeHumidity;
+  }
+  getStatusActive(): boolean {
+    const currentStatusActive = this.accessoryState.statusActive;
+    this.log('getCurrentStatusActive: ' + currentStatusActive);
+    return currentStatusActive;
   }
 
   async updateAllStates() {
@@ -147,18 +160,13 @@ class HttpTemperatureHumidityAccessory implements AccessoryPlugin {
       .catch((error) => {
         this.log('updateAllStates Error : ' + error.message);
       });
-
+    this.accessoryState.statusActive = updated;
     return updated;
   }
 
   async callServer(): Promise<TemperatureAndHumidity> {
-    let temparatureAndHumidity: TemperatureAndHumidity = new TemperatureAndHumidity();
-    await axios.get(this.url)
-      .then((response: AxiosResponse) => {
-        temparatureAndHumidity = response.data as TemperatureAndHumidity;
-      });
-
-    return temparatureAndHumidity;
+    const response = await fetch(this.url);
+    return response.json() as Promise<TemperatureAndHumidity>;
   }
 
   private getRefreshIntervalInMillis(): number {
@@ -166,12 +174,7 @@ class HttpTemperatureHumidityAccessory implements AccessoryPlugin {
   }
 
 }
-class TemperatureAndHumidity {
+interface TemperatureAndHumidity {
   readonly temperature: number;
   readonly humidity: number;
-
-  constructor(temperature = 0, humidity = 0) {
-    this.temperature = temperature;
-    this.humidity = humidity;
-  }
 }
