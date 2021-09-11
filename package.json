@@ -1,6 +1,6 @@
 {
   "name": "homebridge-http-temperature-humidity-sensor",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "Plugin to display temperature and humidity via http in homebridge",
   "main": "dist/homebridge-http-temperature-humidity.js",
   "scripts": {
