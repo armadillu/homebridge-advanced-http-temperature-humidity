@@ -130,18 +130,18 @@ class HttpTemperatureHumidityAccessory implements AccessoryPlugin {
 
   getCurrentTemperature(): number {
     const currentTemperature = this.accessoryState.temperature;
-    this.log('getCurrentTemperature: ' + currentTemperature);
+    //this.log('getCurrentTemperature: ' + currentTemperature);
     return currentTemperature;
   }
 
   getCurrentRelativeHumidity() {
     const currentRelativeHumidity = this.accessoryState.humidity;
-    this.log('getCurrentRelativeHumidity: ' + currentRelativeHumidity);
+    //this.log('getCurrentRelativeHumidity: ' + currentRelativeHumidity);
     return currentRelativeHumidity;
   }
   getStatusActive(): boolean {
     const currentStatusActive = this.accessoryState.statusActive;
-    this.log('getCurrentStatusActive: ' + currentStatusActive);
+    //this.log('getCurrentStatusActive: ' + currentStatusActive);
     return currentStatusActive;
   }
 
