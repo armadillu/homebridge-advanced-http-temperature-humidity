@@ -16,7 +16,7 @@ let hap: HAP;
 export = (api: API) => {
   hap = api.hap;
   api.registerAccessory(
-    'homebridge-http-temperature-humidity-sensor',
+    'homebridge-http-temperature-humidity-sensor2',
     'HttpTemperatureHumiditySensor',
     HttpTemperatureHumidityAccessory,
   );

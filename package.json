@@ -1,7 +1,7 @@
 {
-  "name": "homebridge-http-temperature-humidity-sensor",
-  "version": "2.1.0",
-  "description": "Plugin to display temperature and humidity via http in homebridge",
+  "name": "homebridge-http-temperature-humidity-sensor2",
+  "version": "2.1.1",
+  "description": "Plugin to display temperature and humidity via http in homebridge - fork of UnPoilTefal's repo",
   "main": "dist/homebridge-http-temperature-humidity.js",
   "scripts": {
     "clean": "rimraf ./dist",
@@ -12,19 +12,19 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/UnPoilTefal/homebridge-advanced-http-temperature-humidity.git"
+    "url": "git+https://github.com/armadillu/homebridge-advanced-http-temperature-humidity.git"
   },
   "keywords": [
     "homebridge-plugin",
     "temperature",
     "humidity"
   ],
-  "author": "UnPoilTefal",
+  "author": "armadillu",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/UnPoilTefal/homebridge-advanced-http-temperature-humidity/issues"
+    "url": "https://github.com/armadillu/homebridge-advanced-http-temperature-humidity/issues"
   },
-  "homepage": "https://github.com/UnPoilTefal/homebridge-advanced-http-temperature-humidity#readme",
+  "homepage": "https://github.com/armadillu/homebridge-advanced-http-temperature-humidity#readme",
   "engines": {
     "homebridge": ">=1.0.0"
   },
